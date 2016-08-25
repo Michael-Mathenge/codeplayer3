@@ -80,16 +80,17 @@
 			font-family: monotype;
 			font-size: 90%;
 			padding: 3px;
+			box-sizing: border-box;  
 		}
 
-		.codeLabel{
+		.codeLabel{ 
 			position: absolute;
 			right: 10px;
 			top: 10px;
 			font-weight: bold;
 		}
 
-		#cssContainer, #jsContainer{
+		#CSSContainer, #JSContainer{
 			display: none;
 		}
 
@@ -98,6 +99,11 @@
 			position: relative;
 			left: 20px;
 			border: none;
+		}
+
+		.selected{
+			background-color: grey;
+
 		}
 
 	</style>
@@ -118,44 +124,44 @@
 			</div>
 
 			<ul id="toggles">
-				<li class="toggle">HTML</li>
+				<li class="toggle selected">HTML</li>
 				<li class="toggle">CSS</li>
 				<li class="toggle">JS</li>
-				<li class="toggle" style="border:none">Result</li>
+				<li class="toggle selected" style="border:none">Result</li>
 			</ul>
 		</div>
 
 		<div class="clear"></div> <!--breaks the floats-->
 
-		<div class="codeContainer" id="htmlContainer">
+		<div class="codeContainer" id="HTMLContainer">
 
 			<div class="codeLabel">HTML</div>
 			
-			<textarea>example code</textarea>
+			<textarea id="htmlCode">   <div id="test"></div>  </textarea>
 
 		</div>
 
-		<div class="codeContainer" id="cssContainer">
+		<div class="codeContainer" id="CSSContainer">
 
 			<div class="codeLabel">CSS</div>
 			
-			<textarea>example code</textarea>
+			<textarea id="cssCode">html {background-color: blue}</textarea>
 
-		</div>
+		</div> 
 
-		<div class="codeContainer" id="jsContainer">
+		<div class="codeContainer" id="JSContainer">
 
 			<div class="codeLabel">JAVASCRIPT</div>
 			
-			<textarea>example code</textarea>
+			<textarea id="jsCode"> document.getElementById("test").innerHTML="it's working"; </textarea>
 
 		</div>
 
-		<div class="codeContainer" id="resultContainer">
+		<div class="codeContainer" id="ResultContainer">
 
 			<div class="codeLabel">RESULT</div>
 			
-			<iframe></iframe>
+			<iframe id="resultFrame"></iframe>
 
 		</div>
 
@@ -170,6 +176,37 @@
 		var codeContainerHeight = windowHeight - menuBarHeight;
 
 		$(".codeContainer").height(codeContainerHeight+"px");
+
+		$(".toggle").click(function(){
+
+			$(this).toggleClass("selected");
+
+			var activeDiv = $(this).html();
+
+			$("#"+activeDiv+"Container").toggle();
+
+			var showingDivs = $(".codeContainer").filter(function(){
+
+				return ($(this).css("display")!="none");
+
+			}).length;
+
+			var width = 100/showingDivs;
+
+			$(".codeContainer").width(width+"%");
+
+		});
+
+
+		$("#runButton").click(function(){
+
+			$("iframe").contents().find("html").html('<style>'+$("#cssCode").val()+'</style>'+$("#htmlCode").val());
+
+			document.getElementById("resultFrame").contentWindow.eval($("#jsCode").val());
+
+			
+
+		});
 
 
 	</script>
